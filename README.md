@@ -25,6 +25,11 @@ Run it with
 python3 generate.py
 ```
 
+Here's what is created with the example code provided.
+
+<img src="https://user-images.githubusercontent.com/17362324/179425965-b180a8d0-a00b-4b6a-a350-88f2f1542fde.png" width="600"/>
+
+
 ## Contribution
 
 This is my first time using Cadquery so I'm sure it is far from optimal. Feel free to submit PRs to get it cleaner.
