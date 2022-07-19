@@ -267,7 +267,7 @@ def draw_label_ledge(
     
 
     bucket_length = (prop.length - (prop.units_long + 1)) / prop.units_long
-    ledge_length = 12 + 0.25
+    ledge_length = 12 + 0.75
 
     if prop.height < ledge_length + 0.5:
         warnings.warn(
@@ -278,7 +278,7 @@ def draw_label_ledge(
 
     sketches = []
     for i in range(0, prop.units_long):
-        last_offset = 1.6 if i == prop.units_long - 1 else 0
+        last_offset = 3 if i == prop.units_long - 1 else 0
 
         sketch = (
             cq.Sketch()
