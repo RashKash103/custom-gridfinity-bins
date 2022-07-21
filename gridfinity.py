@@ -187,7 +187,8 @@ def draw_mate(
 
     top = (
         cq.Workplane().copyWorkplane(
-            self.workplaneFromTagged("base").workplane(offset=prop.height - 2.84)
+            self.workplaneFromTagged("base")
+            .workplane(offset=prop.height - 2.84)
         )
         .box(width, length, 7.24, (True, True, False))
         .edges("|Z").fillet(outer_fillet)
@@ -264,26 +265,35 @@ def draw_label_ledge(
 
     if not prop.draw_label_ledge:
         return self
-    
 
     bucket_length = (prop.length - (prop.units_long + 1)) / prop.units_long
     ledge_length = 12 + 0.75
+    back_ledge_offset = 2.9
 
-    if prop.height < ledge_length + 0.5:
-        warnings.warn(
-            "Label ledges cannot be drawn as the specified unit height is too low.",
-            CannotDrawLabelLedgesWarning
-        )
-        return self
+    max_ledge_height = prop.height - BOTTOM_THICKNESS
+
+    last_offset = 0
+    ledge_height = min(max_ledge_height, ledge_length)
 
     sketches = []
     for i in range(0, prop.units_long):
-        last_offset = 3 if i == prop.units_long - 1 else 0
+
+        if i == prop.units_long - 1:
+            last_offset = back_ledge_offset
+            ledge_height = min(max_ledge_height, ledge_length + last_offset)
 
         sketch = (
             cq.Sketch()
-            .segment((last_offset, 0), (-ledge_length, 0))
-            .segment((last_offset, -ledge_length - last_offset))
+            .segment((last_offset, -ledge_height), (last_offset, 0))
+            .segment((-ledge_length, 0))
+        )
+
+        if ledge_height < ledge_length:
+            sketch = sketch.segment(
+                (-ledge_length + ledge_height, -ledge_height))
+
+        sketch = (
+            sketch
             .close()
             .assemble()
             .vertices("<X")
@@ -292,8 +302,7 @@ def draw_label_ledge(
                 - 0.5 - (0.5 * prop.units_long - 1) * (bucket_length + 1),
                 (prop.height - BOTTOM_THICKNESS) / 2)))
             .moved(Location(Vector(
-                i * (bucket_length + 1)
-                - last_offset,
+                i * (bucket_length + 1) - last_offset,
                 0
             )))
         )
@@ -331,6 +340,7 @@ def draw_magnet_bore_holes(
 
     return self
 
+
 def shave_outer_shell(
     self: Workplane,
     prop: Properties
@@ -364,10 +374,11 @@ Workplane.shaveOuterShell = shave_outer_shell
 def make_box(
     prop: Properties,
     out_file: Union[str, None] = None,
-    export_type: Optional[Literal["STL", "STEP", "AMF", "SVG", "TJS", "DXF", "VRML", "VTP"]] = None,
+    export_type: Optional[Literal["STL", "STEP", "AMF",
+                                  "SVG", "TJS", "DXF", "VRML", "VTP"]] = None,
     tolerance: float = 0.1,
     angular_tolerance: float = 0.1,
-    opt = None
+    opt=None
 ) -> Workplane:
     box = (
         cq.Workplane()
@@ -396,10 +407,11 @@ def make_box(
 def export_box(
     box: Workplane,
     out_file: Union[str, None] = None,
-    export_type: Optional[Literal["STL", "STEP", "AMF", "SVG", "TJS", "DXF", "VRML", "VTP"]] = None,
+    export_type: Optional[Literal["STL", "STEP", "AMF",
+                                  "SVG", "TJS", "DXF", "VRML", "VTP"]] = None,
     tolerance: float = 0.1,
     angular_tolerance: float = 0.1,
-    opt = None
+    opt=None
 ) -> Workplane:
     cq.exporters.export(
         box,
@@ -415,7 +427,7 @@ def export_box(
 def export_svg(
     box: Workplane,
     out_file: Union[str, None] = None,
-    opt = None
+    opt=None
 ) -> Workplane:
 
     settings = {
