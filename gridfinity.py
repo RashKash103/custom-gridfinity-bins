@@ -1,9 +1,19 @@
+# STDLIB
 import math
-import cadquery2 as cq
+import platform
 import warnings
-from cadquery2 import Workplane, Vector, Location
 from typing import List, Union, Optional, Literal
 from dataclasses import dataclass
+
+# EXT
+# at the Moment cadquery2 is still under development
+# on windows You need to use version cadquery==2.20b0 (2022-08-24)
+if platform.system() == "Windows" :
+    import cadquery as cq                                   # noqa
+    from cadquery import Workplane, Vector, Location        # noqa
+else:
+    import cadquery2 as cq                                  # noqa
+    from cadquery2 import Workplane, Vector, Location       # noqa
 
 
 BOTTOM_THICKNESS = 2

@@ -1,1 +1,2 @@
-cadquery2==2.1.1
+cadquery2==2.1.1; platform_system != "Windows"
+cadquery==2.20b0; platform_system == "Windows"
